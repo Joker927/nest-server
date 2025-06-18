@@ -4,16 +4,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   /**
    * 用户注册接口
    * @param createUserDto 用户注册信息
    * @returns 注册成功的用户信息
    */
-  @Post()
+  @Post('add')
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    // return this.userService.create(createUserDto);
+    return { id: 1, name: 2 }
   }
 
   /**
@@ -21,7 +22,7 @@ export class UserController {
    * @param id 用户ID
    * @returns 用户信息
    */
-  @Get(':id')
+  @Get('detail/:id')
   async findOne(@Param('id') id: string) {
     // return this.userService.findOne(+id);
     return id;
