@@ -1,30 +1,33 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   /**
-   * 用户注册接口
-   * @param createUserDto 用户注册信息
-   * @returns 注册成功的用户信息
+   * User registration interface
+   * @param createUserDto User registration information
+   * @returns Registered user information
    */
   @Post('add')
   async create(@Body() createUserDto: CreateUserDto) {
-    // return this.userService.create(createUserDto);
-    return { id: 1, name: 2 }
+    return this.userService.create(createUserDto);
   }
 
   /**
-   * 查询用户信息接口
-   * @param id 用户ID
-   * @returns 用户信息
+   * Query user information interface
+   * @param id User ID
+   * @returns User information or null
    */
   @Get('detail/:id')
   async findOne(@Param('id') id: string) {
-    // return this.userService.findOne(+id);
-    return id;
+    const user = await this.userService.findOne(id);
+    if (!user) {
+      return { message: 'User not found' };
+    }
+    return user;
   }
 }

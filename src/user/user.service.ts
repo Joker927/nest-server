@@ -1,31 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
-
-// Define a User type
-type User = CreateUserDto & { id: number };
+import { User } from './schemas/user.schema';
 
 @Injectable()
 export class UserService {
-  // Explicitly define the type of the users array
-  private users: User[] = [];
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  /**
-   * 创建用户
-   * @param createUserDto 用户注册信息    
-   * @returns 注册成功的用户信息
-   */
-  create(createUserDto: CreateUserDto) {
-    const newUser: User = { ...createUserDto, id: this.users.length + 1 };
-    this.users.push(newUser);
-    return newUser;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save();
   }
 
-  /**
-   * 根据用户ID查询用户信息
-   * @param id 用户ID
-   * @returns 用户信息
-   */
-  findOne(id: number) {
-    return this.users.find(user => user.id === id); 
+  // Update the return type to include null
+  async findOne(id: string): Promise<User | null> {
+    return this.userModel.findOne({ userId: id }).exec();
   }
 }
