@@ -5,7 +5,7 @@ import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   /**
    * User registration interface
@@ -29,5 +29,11 @@ export class UserController {
       return { message: 'User not found' };
     }
     return user;
+  }
+
+
+  @Get('list')
+  async findAll() {
+    return this.userService.findAll();
   }
 }
