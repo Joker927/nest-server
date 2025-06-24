@@ -9,6 +9,12 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // 注册全局响应拦截器
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  app.enableCors({
+    origin: ['https://vue3-zhangyiming.vercel.app', 'http://192.168.29.154:3000', 'https://192.168.29.154:3000],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+  });
   await app.listen(3100);
 }
 bootstrap();
