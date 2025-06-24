@@ -9,6 +9,6 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // 注册全局响应拦截器
   app.useGlobalInterceptors(new ResponseInterceptor());
-  await app.listen(3000);
+  await app.listen(3100);
 }
 bootstrap();
