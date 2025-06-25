@@ -1,8 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
+import { supabase } from '../supabase.config';
 
 @Injectable()
 export class UserService {
@@ -20,8 +21,8 @@ export class UserService {
     return /^\d{17}[0-9Xx]$/.test(idCard);
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const { userName, avatar, phone, idCard } = createUserDto;
+  async create(createUserDto: CreateUserDto): Promise<{ message: string; user?: User }> {
+    const { userName, phone, idCard, email, password } = createUserDto;
 
     //自动生成userId,且验证userId是否存在,不可重复  
     let userId = 'user' + Date.now();
@@ -39,20 +40,61 @@ export class UserService {
       throw new HttpException('身份证号不合法', HttpStatus.BAD_REQUEST);
     }
 
-    if (!avatar) {
-      createUserDto.avatar = 'data:image/png;base64,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'
+    // 使用 Supabase 进行用户注册
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    console.log("🚀 ~ UserService ~ create ~ data:", JSON.stringify(data))
+
+    if (error || !data.user) {
+      throw new HttpException('注册失败', HttpStatus.BAD_REQUEST);
     }
 
+    // 将 Supabase 用户 ID 存入用户数据
+    createUserDto.supabaseUserId = data.user?.id;
+
     const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+    await createdUser.save();
+
+    return {
+      message: '注册成功，请前往邮箱确认', user: createdUser
+    };
   }
 
-  // Update the return type to include null
+  async login(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw new UnauthorizedException(error.message);
+    if (!data.session) throw new UnauthorizedException('登录失败');
+
+    return {
+      accessToken: data.session.access_token,
+      user: data.user,
+    };
+  }
+
   async findOne(id: string): Promise<User | null> {
     return this.userModel.findOne({ userId: id }).exec();
   }
 
+
+
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
+  }
+
+  async getProfile(accessToken: string) {
+    const { data, error } = await supabase.auth.getUser(accessToken);
+    if (error || !data.user) throw new UnauthorizedException('Token无效');
+
+    const user = await this.userModel.findOne({
+      supabaseUserId: data.user.id,
+    }).exec()
+
+    return user;
   }
 }

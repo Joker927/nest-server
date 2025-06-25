@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /build
+删除.bat
 
 # Logs
 logs

@@ -8,19 +8,22 @@ export class UserController {
   constructor(private readonly userService: UserService) { }
 
   /**
-   * User registration interface
-   * @param createUserDto User registration information
-   * @returns Registered user information
+   * @param createUserDto 
+   * @returns 
    */
   @Post('add')
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  @Post('login')
+  login(@Body() body: { email: string; password: string }) {
+    return this.userService.login(body.email, body.password);
+  }
+
   /**
-   * Query user information interface
    * @param id User ID
-   * @returns User information or null
+   * @returns 
    */
   @Get('detail/:id')
   async findOne(@Param('id') id: string) {
@@ -35,5 +38,10 @@ export class UserController {
   @Get('list')
   async findAll() {
     return this.userService.findAll();
+  }
+
+  @Post('userInfo')
+  getProfile(@Body() body: { token: string; }) {
+    return this.userService.getProfile(body.token);
   }
 }
