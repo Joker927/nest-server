@@ -12,7 +12,6 @@ import { Connection } from 'mongoose';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        // uri: 'mongodb+srv://Joker927:z453512494.@cluster0.yb3buvk.mongodb.net/node?retryWrites=true&w=majority&appName=Cluster0',
         uri: configService.get<string>('MONGODB_URI'),
         connectionFactory: (connection: Connection) => {
           // 监听连接成功事件
