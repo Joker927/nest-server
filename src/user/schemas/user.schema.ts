@@ -13,9 +13,6 @@ export class User extends Document {
   phone: string;
 
   @Prop()
-  idCard: string;
-
-  @Prop()
   email: string;
 
   @Prop()

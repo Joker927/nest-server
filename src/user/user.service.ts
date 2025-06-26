@@ -16,28 +16,33 @@ export class UserService {
     return /^1[3-9]\d{9}$/.test(phone);
   }
 
-  private validateIdCard(idCard: string): boolean {
-    if (!idCard) return false; // 不允许空值
-    return /^\d{17}[0-9Xx]$/.test(idCard);
+  // 验证邮箱合法性
+  private validateEmail(email: string): boolean {
+    if (!email) return false; // 不允许空值
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   async create(createUserDto: CreateUserDto): Promise<{ message: string; user?: User }> {
-    const { userName, phone, idCard, email, password } = createUserDto;
+    const { userName, phone, email, password } = createUserDto;
+    //验证邮箱合法性，并且不允许重复
+    if (!this.validateEmail(email)) {
+      throw new HttpException('邮箱不合法', HttpStatus.BAD_REQUEST);
+    }
+    const existingUser = await this.userModel.find({ email }).exec();
+    if (existingUser.length > 0) {
+      throw new HttpException('邮箱已被注册', HttpStatus.BAD_REQUEST);
+    }
 
     //自动生成userId,且验证userId是否存在,不可重复  
     let userId = 'user' + Date.now();
     createUserDto.userId = userId;
 
     if (!userName) {
-      createUserDto.userName = '';
+      createUserDto.userName = 'test' + Date.now();
     }
 
     if (!this.validatePhone(phone)) {
       throw new HttpException('手机号不合法', HttpStatus.BAD_REQUEST);
-    }
-
-    if (!this.validateIdCard(idCard)) {
-      throw new HttpException('身份证号不合法', HttpStatus.BAD_REQUEST);
     }
 
     // 使用 Supabase 进行用户注册
@@ -45,7 +50,6 @@ export class UserService {
       email,
       password,
     });
-    console.log("🚀 ~ UserService ~ create ~ data:", JSON.stringify(data))
 
     if (error || !data.user) {
       throw new HttpException('注册失败', HttpStatus.BAD_REQUEST);
@@ -58,7 +62,7 @@ export class UserService {
     await createdUser.save();
 
     return {
-      message: '注册成功，请前往邮箱确认', user: createdUser
+      message: '注册成功，请登录', user: createdUser
     };
   }
 

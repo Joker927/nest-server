@@ -7,17 +7,8 @@ export class CreateUserDto {
   @IsString()
   userName: string;
 
-  @IsNumber()
-  age: number;
-
   @IsString()
   phone: string;
-
-  @IsString()
-  idCard: string;
-
-  @IsString()
-  gender: string;
 
   @IsEmail()
   email: string;
