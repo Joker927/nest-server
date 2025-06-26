@@ -3,6 +3,7 @@
 /node_modules
 /build
 删除.bat
+.env
 
 # Logs
 logs
