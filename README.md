@@ -42,6 +42,10 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+备注
+.env文件配置
+MONGODB_URI=mongodb+srv://<userName>:<password>@cluster0.yb3buvk.mongodb.net/node?retryWrites=true&w=majority&appName=Cluster0
 ```
 
 ## Run tests
