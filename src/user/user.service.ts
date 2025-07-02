@@ -100,4 +100,12 @@ export class UserService {
 
     return user;
   }
+
+  async getProfileByUser(user: any) {
+    if (!user || !user.id) throw new UnauthorizedException('用户信息无效');
+    // 这里假设 user.id 是 supabaseUserId，如果不是请根据实际 token 内容调整
+    const dbUser = await this.userModel.findOne({ supabaseUserId: user.id }).exec();
+    if (!dbUser) throw new UnauthorizedException('用户不存在');
+    return dbUser;
+  }
 }

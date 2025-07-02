@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { AuthGuard } from './auth/auth.guard';
+import { Reflector } from '@nestjs/core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,6 +11,8 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // 注册全局响应拦截器
   app.useGlobalInterceptors(new ResponseInterceptor());
+  // 注册全局守卫
+  // app.useGlobalGuards(app.get(Reflector), app.get(AuthGuard));
 
   app.enableCors({
     origin: [

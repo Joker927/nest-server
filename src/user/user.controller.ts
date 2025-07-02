@@ -1,7 +1,9 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schema';
+import { Request } from 'express';
+import { Public } from '../utils/public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -12,26 +14,15 @@ export class UserController {
    * @returns 
    */
   @Post('add')
+  @Public()
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Post('login')
+  @Public()
   login(@Body() body: { email: string; password: string }) {
     return this.userService.login(body.email, body.password);
-  }
-
-  /**
-   * @param id User ID
-   * @returns 
-   */
-  @Get('detail/:id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne(id);
-    if (!user) {
-      return { message: 'User not found' };
-    }
-    return user;
   }
 
 
@@ -41,7 +32,7 @@ export class UserController {
   }
 
   @Post('userInfo')
-  getProfile(@Body() body: { token: string; }) {
-    return this.userService.getProfile(body.token);
+  getProfile(@Req() req: Request) {
+    return this.userService.getProfileByUser((req as any).user);
   }
 }
