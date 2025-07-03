@@ -5,7 +5,7 @@ import { supabase } from '../supabase.config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
@@ -32,4 +32,5 @@ export class AuthGuard implements CanActivate {
     request.user = data.user; // 挂载 supabase 用户信息
     return true;
   }
+
 } 

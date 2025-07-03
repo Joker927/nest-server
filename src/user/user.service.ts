@@ -81,24 +81,8 @@ export class UserService {
     };
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return this.userModel.findOne({ userId: id }).exec();
-  }
-
-
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
-  }
-
-  async getProfile(accessToken: string) {
-    const { data, error } = await supabase.auth.getUser(accessToken);
-    if (error || !data.user) throw new UnauthorizedException('Token无效');
-
-    const user = await this.userModel.findOne({
-      supabaseUserId: data.user.id,
-    }).exec()
-
-    return user;
   }
 
   async getProfileByUser(user: any) {

@@ -5,6 +5,7 @@ import { User } from './schemas/user.schema';
 import { Request } from 'express';
 import { Public } from '../utils/public.decorator';
 
+// @Public()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) { }
