@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthGuard } from './auth/auth.guard';
     }),
     UserModule,
     ArticleModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService,
