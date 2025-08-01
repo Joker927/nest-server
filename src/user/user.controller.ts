@@ -28,7 +28,6 @@ export class UserController {
 
 
   @Get('list')
-  @Public()
   //打印head和参数
   async findAll(@Req() req: Request) {
     console.log('req', req.headers)
