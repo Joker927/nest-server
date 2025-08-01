@@ -1,9 +1,9 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Body, Delete } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Public } from '../utils/public.decorator';
 
-@Controller('internal/upload')
+@Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 
@@ -11,7 +11,17 @@ export class UploadController {
   @Public()
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    const url = await this.uploadService.uploadImage(file);
-    return { url };
+    const obj = await this.uploadService.uploadImage(file);
+    return {
+      url: obj.secure_url,
+      publicId: obj.public_id,
+    };
+  }
+
+  @Post('deleteImage')
+  @Public()
+  async deleteImage(@Body('publicId') publicId: string) {
+    const result = await this.uploadService.deleteImage(publicId);
+    return { result };
   }
 } 

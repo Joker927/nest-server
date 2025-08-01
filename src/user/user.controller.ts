@@ -28,7 +28,11 @@ export class UserController {
 
 
   @Get('list')
-  async findAll() {
+  @Public()
+  //打印head和参数
+  async findAll(@Req() req: Request) {
+    console.log('req', req.headers)
+    console.log('req', req.query)
     return this.userService.findAll();
   }
 

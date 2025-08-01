@@ -13,17 +13,26 @@ export class UploadService {
         });
     }
 
-    async uploadImage(file: Express.Multer.File): Promise<string> {
+    async uploadImage(file: Express.Multer.File): Promise<any> {
         return new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 { folder: 'uploads' },
                 (error, result) => {
                     if (error) return reject(error);
                     if (!result || !result.secure_url) return reject(new Error('Cloudinary 上传失败'));
-                    resolve(result.secure_url);
+                    resolve(result);
                 },
             );
             Readable.from(file.buffer).pipe(uploadStream);
+        });
+    }
+
+    async deleteImage(publicId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            cloudinary.uploader.destroy(publicId, (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            });
         });
     }
 } 

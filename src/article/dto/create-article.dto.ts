@@ -1,12 +1,21 @@
-import { IsArray, IsString, ArrayNotEmpty, MaxLength, IsUrl } from 'class-validator';
+import { IsArray, IsString, ArrayNotEmpty, MaxLength, IsUrl, ValidateNested, IsObject } from 'class-validator';
 import { Type } from 'class-transformer';
+
+export class ImageDto {
+  @IsString()
+  @IsUrl()
+  url: string;
+
+  @IsString()
+  public_id: string;
+}
 
 export class CreateArticleDto {
   @IsArray()
   @ArrayNotEmpty()
-  @IsUrl({},{each:true})
-  @Type(() => String)
-  images: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
+  images: ImageDto[];
 
   @IsString()
   @MaxLength(100, { message: '标题不能超过100字' })
