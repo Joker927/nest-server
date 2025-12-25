@@ -25,6 +25,8 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('nestApi');
-  await app.listen(3100);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0');
+  // await app.listen(3000);
 }
 bootstrap();
