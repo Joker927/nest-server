@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install flyctl
+      - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@v1
+
+      - name: Verify flyctl
+        run: fly version
 
       - name: Deploy to Fly.io
         run: fly deploy --remote-only
