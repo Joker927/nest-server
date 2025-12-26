@@ -16,8 +16,12 @@ import { UploadModule } from './upload/upload.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+        maxPoolSize: 10,
+        bufferCommands: false,
+        bufferMaxEntries: 0,
         connectionFactory: (connection: Connection) => {
           // 监听连接成功事件
           connection.on('connected', () => {
