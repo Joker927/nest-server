@@ -21,7 +21,6 @@ import { UploadModule } from './upload/upload.module';
         socketTimeoutMS: 45000,
         maxPoolSize: 10,
         bufferCommands: false,
-        bufferMaxEntries: 0,
         connectionFactory: (connection: Connection) => {
           // 监听连接成功事件
           connection.on('connected', () => {
