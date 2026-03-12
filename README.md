@@ -100,3 +100,24 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## AI Chat（火山方舟）
+
+新增接口：`POST /nestApi/ai/chat`
+
+请求体：
+
+```json
+{
+  "prompt": "给我一个 NestJS 学习路线"
+}
+```
+
+环境变量：
+
+```bash
+ARK_API_KEY=你的火山方舟API Key
+ARK_MODEL=你的方舟模型ID
+# 可选，默认值如下
+ARK_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+```
