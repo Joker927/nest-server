@@ -101,23 +101,50 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-## AI Chat（火山方舟）
+## AI Chat（阿里千问）
 
 新增接口：`POST /nestApi/ai/chat`
 
-请求体：
+请求体（普通模式）：
 
 ```json
 {
-  "prompt": "给我一个 NestJS 学习路线"
+  "prompt": "给我一个 NestJS 学习路线",
+  "sessionId": "user-1405377318070654"
 }
 ```
 
-环境变量：
+请求体（流式模式）：
+
+```json
+{
+  "prompt": "继续上次的话题",
+  "sessionId": "user-1405377318070654",
+  "stream": true
+}
+```
+
+说明：
+
+- `sessionId` 用于会话上下文记忆，服务端会按会话保存最近消息。
+- `stream=true` 时返回 `text/event-stream`，每个 chunk 形如 `data: {"token":"..."}`，结束时返回 `data: [DONE]`。
+- Prompt 由 `AiService` 统一模板化处理，Controller 不拼接 Prompt。
+
+环境变量（`QWEN_API_KEY` 必填）：
 
 ```bash
-ARK_API_KEY=你的火山方舟API Key
-ARK_MODEL=你的方舟模型ID
-# 可选，默认值如下
-ARK_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+# 必填
+QWEN_API_KEY=sk-4996177e73a842008be7e84f77133577
+
+# 可选（不填时使用如下默认值）
+QWEN_MODEL=qwen3.5-plus
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1
+```
+
+建议在项目根目录 `.env` 中配置：
+
+```bash
+QWEN_API_KEY=sk-4996177e73a842008be7e84f77133577
+QWEN_MODEL=qwen3.5-plus
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1
 ```
