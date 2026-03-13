@@ -28,6 +28,44 @@ describe('AiService', () => {
     );
   });
 
+  it('should retry with standard compatible url when app-compatible url is not supported', async () => {
+    (configService.get as jest.Mock).mockImplementation((key: string) => {
+      if (key === 'QWEN_API_KEY') return 'test-key';
+      if (key === 'QWEN_MODEL') return 'qwen3.5-plus';
+      if (key === 'QWEN_BASE_URL') {
+        return 'https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1';
+      }
+      return undefined;
+    });
+
+    const fetchMock = jest
+      .spyOn(global, 'fetch' as any)
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        text: async () =>
+          '{"request_id":"1","code":"Not Found","message":"Not support"}',
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '重试成功' } }],
+          usage: { total_tokens: 11 },
+        }),
+      } as Response);
+
+    const result = await service.chat('你好', 'session-1');
+
+    expect(result).toEqual({
+      model: 'qwen3.5-plus',
+      sessionId: 'session-1',
+      answer: '重试成功',
+      usage: { total_tokens: 11 },
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    fetchMock.mockRestore();
+  });
+
   it('should return parsed answer when api success', async () => {
     (configService.get as jest.Mock).mockImplementation((key: string) => {
       if (key === 'QWEN_API_KEY') return 'test-key';

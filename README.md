@@ -141,6 +141,12 @@ QWEN_MODEL=qwen3.5-plus
 QWEN_BASE_URL=https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1
 ```
 
+常见报错排查：
+
+- 若返回 `{"code":"Not Found","message":"Not support"}`，通常是 `apps/protocols` 兼容地址不支持该模型。
+- 服务端已内置自动重试：会从 `https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1` 自动回退到 `https://dashscope.aliyuncs.com/compatible-mode/v1`。
+- 你也可以直接把 `.env` 里的 `QWEN_BASE_URL` 设置为 `https://dashscope.aliyuncs.com/compatible-mode/v1`。
+
 建议在项目根目录 `.env` 中配置：
 
 ```bash
